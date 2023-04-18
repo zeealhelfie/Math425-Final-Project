@@ -15,7 +15,7 @@ def read_training_data(fname, D=None):
 
     The set D of features must be a subset of the features in the data (see text).
     """
-    file = open(fname)
+    file = open("train.data")
     params = ["radius", "texture", "perimeter","area","smoothness","compactness","concavity","concave points","symmetry","fractal dimension"];
     stats = ["(mean)", "(stderr)", "(worst)"]
     feature_labels = set([y+x for x in stats for y in params])
