@@ -1,19 +1,22 @@
 import efficient_cancer_data as ecd
 import numpy as np
 
-
+# a.
 # Read training data
 A, b = ecd.read_training_data('train.data', )
 
 Q, R = np.linalg.qr(A)
 coefficients = np.linalg.inv(R) @ Q.T @ b
-print(coefficients)
+print("coefficients:", coefficients)
 
+# b. 
 def classifier(y):
     if y >= 0:
         return 1
     else:
         return -1
+
+# c.
 from efficient_cancer_data import read_validation_data
 
 A_val, b_val = read_validation_data('validate.data', )
