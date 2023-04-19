@@ -34,17 +34,22 @@ def read_training_data(fname, D=None):
         b.append(-1) if row[1] == 'B' else b.append(1)
         feature_vectors[patient_ID] = Vec(D, {f:float(row[feature_map[f]+2]) for f in D})
         A.append(vec2list(feature_vectors[patient_ID]))
-    return Matrix(A), Matrix(b)
+    A = np.array(A)
+    Q, R = gram_schmidt_qr(A)
+    return R, Q.T @ Matrix(b)
         
-def gram_schmidt(A):
+def gram_schmidt_qr(A):
+    Q = np.zeros_like(A)
+    R = np.zeros((A.shape[1], A.shape[1]))
     # takes in sympy matrix as A
-    for j in range(0,n):
-        xj=A.col(j)
-        vj=xj
-        uj=vj/vj.norm()
-        for i in range(0,j-1):
-            rij=xj.dot(Q.col())
-        return 0
+    for j in range(A.shape[1]):
+        v = A[:, j]
+        for i in range(j):
+            R[i, j] = np.dot(Q[:, i], A[:, j])
+            v -= R[i, j] * Q[:, i]
+        R[j, j] = np.linalg.norm(v)
+        Q[:, j] = v / R[j, j]
+    return Q, R
 
 def read_validation_data(filename):
     with open(filename, 'r') as f:

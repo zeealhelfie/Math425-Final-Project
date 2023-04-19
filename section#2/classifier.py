@@ -1,11 +1,12 @@
 import efficient_cancer_data as ecd
 import numpy as np
+from efficient_cancer_data import read_validation_data
 
 # a.
 # Read training data
 A, b = ecd.read_training_data('train.data', )
 
-Q, R = np.linalg.qr(A)
+Q, R = ecd.gram_schmidt_qr(A)  # use Gram-Schmidt QR factorization
 coefficients = np.linalg.inv(R) @ Q.T @ b
 print("coefficients:", coefficients)
 
