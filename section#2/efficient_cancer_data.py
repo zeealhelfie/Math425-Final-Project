@@ -1,7 +1,7 @@
 # Copyright 2013 Philip N. Klein
 from vec import Vec
 from vecutil import vec2list
-from sympy import Matrix, zeros
+from sympy import Matrix
 import numpy as np
 
 
@@ -34,27 +34,22 @@ def read_training_data(fname, D=None):
         b.append(-1) if row[1] == 'B' else b.append(1)
         feature_vectors[patient_ID] = Vec(D, {f:float(row[feature_map[f]+2]) for f in D})
         A.append(vec2list(feature_vectors[patient_ID]))
-    return Matrix(A), Matrix(b)
+    A = np.array(A)
+    Q, R = gram_schmidt_qr(A)
+    return R, Q.T @ Matrix(b)
         
-def old_gram_schmidt(A):
+def gram_schmidt_qr(A):
+    Q = np.zeros_like(A)
+    R = np.zeros((A.shape[1], A.shape[1]))
     # takes in sympy matrix as A
-    m,n=A.shape
-    Q=Matrix()
-    R=zeros(n)
-    for j in range(0,n):
-        print(f"j: ",j)#debug output
-        xj=A.col(j)
-        vj=xj
-        uj=vj/vj.norm()
-        for i in range(0,j-1):
-            print(f"i: ",i)#debug output
-            rij=xj.dot(Q.col(i))
-            R
-        rjj=vj.norm()
-        uj=vj/rjj
-        Q[:,j] = uj
-        print("bepis",Q)
-    return 0
+    for j in range(A.shape[1]):
+        v = A[:, j]
+        for i in range(j):
+            R[i, j] = np.dot(Q[:, i], A[:, j])
+            v -= R[i, j] * Q[:, i]
+        R[j, j] = np.linalg.norm(v)
+        Q[:, j] = v / R[j, j]
+    return Q, R
 
 def read_validation_data(filename):
     with open(filename, 'r') as f:
@@ -67,5 +62,3 @@ def read_validation_data(filename):
         features = [float(x) for x in line[2:]]
         data.append(features)
     return np.array(data), np.array(labels)
-
-A,b=read_training_data("train.data")
