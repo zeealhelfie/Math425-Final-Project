@@ -35,7 +35,6 @@ def read_training_data(fname, D=None):
         feature_vectors[patient_ID] = Vec(D, {f:float(row[feature_map[f]+2]) for f in D})
         A.append(vec2list(feature_vectors[patient_ID]))
     return Matrix(A), Matrix(b)
-<<<<<<< HEAD
         
 def gram_schmidt(A):
     # takes in sympy matrix as A
@@ -46,8 +45,6 @@ def gram_schmidt(A):
         for i in range(0,j-1):
             rij=xj.dot(Q.col())
         return 0
-=======
-
 
 def read_validation_data(filename):
     with open(filename, 'r') as f:
@@ -60,4 +57,3 @@ def read_validation_data(filename):
         features = [float(x) for x in line[2:]]
         data.append(features)
     return np.array(data), np.array(labels)
->>>>>>> 78212c556f508a7cb9b4967ddc4b51d36fcbd2a6
