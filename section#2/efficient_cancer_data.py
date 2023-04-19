@@ -33,3 +33,12 @@ def read_training_data(fname, D=None):
         A.append(vec2list(feature_vectors[patient_ID]))
     return Matrix(A), Matrix(b)
         
+def gram_schmidt(A):
+    # takes in sympy matrix as A
+    for j in range(0,n):
+        xj=A.col(j)
+        vj=xj
+        uj=vj/vj.norm()
+        for i in range(0,j-1):
+            rij=xj.dot(Q.col())
+        return 0
