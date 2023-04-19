@@ -1,7 +1,7 @@
 # Copyright 2013 Philip N. Klein
 from vec import Vec
 from vecutil import vec2list
-from sympy import Matrix
+from sympy import Matrix, zeros
 import numpy as np
 
 
@@ -36,15 +36,25 @@ def read_training_data(fname, D=None):
         A.append(vec2list(feature_vectors[patient_ID]))
     return Matrix(A), Matrix(b)
         
-def gram_schmidt(A):
+def old_gram_schmidt(A):
     # takes in sympy matrix as A
+    m,n=A.shape
+    Q=Matrix()
+    R=zeros(n)
     for j in range(0,n):
+        print(f"j: ",j)#debug output
         xj=A.col(j)
         vj=xj
         uj=vj/vj.norm()
         for i in range(0,j-1):
-            rij=xj.dot(Q.col())
-        return 0
+            print(f"i: ",i)#debug output
+            rij=xj.dot(Q.col(i))
+            R
+        rjj=vj.norm()
+        uj=vj/rjj
+        Q[:,j] = uj
+        print("bepis",Q)
+    return 0
 
 def read_validation_data(filename):
     with open(filename, 'r') as f:
@@ -57,3 +67,5 @@ def read_validation_data(filename):
         features = [float(x) for x in line[2:]]
         data.append(features)
     return np.array(data), np.array(labels)
+
+A,b=read_training_data("train.data")
