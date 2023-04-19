@@ -2,6 +2,8 @@
 from vec import Vec
 from vecutil import vec2list
 from sympy import Matrix
+import numpy as np
+
 
 def read_training_data(fname, D=None):
     """Given a file in appropriate format, and given a set D of features,
@@ -15,6 +17,7 @@ def read_training_data(fname, D=None):
 
     The set D of features must be a subset of the features in the data (see text).
     """
+    
     file = open(fname)
     params = ["radius", "texture", "perimeter","area","smoothness","compactness","concavity","concave points","symmetry","fractal dimension"];
     stats = ["(mean)", "(stderr)", "(worst)"]
@@ -32,6 +35,7 @@ def read_training_data(fname, D=None):
         feature_vectors[patient_ID] = Vec(D, {f:float(row[feature_map[f]+2]) for f in D})
         A.append(vec2list(feature_vectors[patient_ID]))
     return Matrix(A), Matrix(b)
+<<<<<<< HEAD
         
 def gram_schmidt(A):
     # takes in sympy matrix as A
@@ -42,3 +46,18 @@ def gram_schmidt(A):
         for i in range(0,j-1):
             rij=xj.dot(Q.col())
         return 0
+=======
+
+
+def read_validation_data(filename):
+    with open(filename, 'r') as f:
+        lines = f.readlines()
+    data = []
+    labels = []
+    for line in lines:
+        line = line.strip().split(',')
+        labels.append(1 if line[1] == 'M' else -1)
+        features = [float(x) for x in line[2:]]
+        data.append(features)
+    return np.array(data), np.array(labels)
+>>>>>>> 78212c556f508a7cb9b4967ddc4b51d36fcbd2a6

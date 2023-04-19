@@ -1,10 +1,9 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Created on Sun Feb 19 21:13:22 2023
 
 @author: hboateng
 """
+
 from imp import reload
 from numpy import array, identity, ones, nonzero, zeros
 from numpy import linalg as LA
