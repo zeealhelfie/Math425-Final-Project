@@ -45,7 +45,7 @@ f.close()
 netw=pageRank(G,actors,0.85,1e-6,15)  
 result = netw.linsolve()
 
-r=open("actorResults.txt", "x")
+r=open("actorResults.txt", "w")
 for i in result:
     r.write(f"{i[0]}, [ {i[1]} ]\n")
 r.close()
