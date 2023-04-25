@@ -45,8 +45,6 @@ with open("data/top250movies.txt","r", encoding='UTF-8') as f:
             # Link node j to node i, i.e. increment weight of G_{ij} 
             G[i, row[idx+1:]] += 1.0
             #print(ls[idx], G[i, row[idx+1:]])
-        #j=row[0]
-        #G[j, row[1:]] += 1.0
 
 f.close()
 
