@@ -9,8 +9,8 @@ import numpy as np
 def read_training_data(filename):
     with open(filename, 'r') as f:
         lines = f.readlines()
-    data = []
-    labels = []
+    data = [] # A
+    labels = [] # y
     for line in lines:
         # Split the line into its components
         line = line.strip().split(',')
@@ -29,7 +29,7 @@ def gram_schmidt_qr(A, b):
     R = np.zeros((A.shape[1], A.shape[1]))
     # Perform Gram-Schmidt orthogonalization on the columns of A
     for j in range(A.shape[1]):
-        v = A[:, j]
+        v = A[:, j] 
         for i in range(j):
             R[i, j] = np.dot(Q[:, i], A[:, j])
             v -= R[i, j] * Q[:, i]
