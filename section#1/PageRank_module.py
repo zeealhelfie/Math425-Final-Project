@@ -23,7 +23,8 @@ class pageRank():
             else: # adjustment for a column of zeros
                 G[:,i]=ones((n,))/float(n)           
             
-        self.G       = G         # normalized matrix        self.nodes   = nodelist  # list of node labels
+        self.G       = G         # normalized matrix
+        #self.nodes   = nodelist  # list of node labels
         self.eps     = eps       # probability of jumping to a link on page
         self.size    = G.shape[0]# size of matrix
         self.tol     = tol # tolerance for power method
