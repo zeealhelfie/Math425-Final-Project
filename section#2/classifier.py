@@ -1,31 +1,47 @@
-import efficient_cancer_data as ecd
 import numpy as np
-from efficient_cancer_data import read_validation_data
-from efficient_cancer_data import read_validation_data
+import efficient_cancer_data as ecd
 
-# a.
-# Read training data
-A, b = ecd.read_training_data('train.data', )
+# read training data
+A, b = ecd.read_training_data('train.data')
 
-Q, R = ecd.gram_schmidt_qr(A)  # use Gram-Schmidt QR factorization
-coefficients = np.linalg.inv(R).dot(Q.T).dot(b)
+# compute coefficients of least-squares solution using Gram-Schmidt QR algorithm
+x = ecd.gram_schmidt_qr(A, b)
 
-print("coefficients:", coefficients) # hat(x) or hat(beta)
+# print coefficients of the linear model
+for i, coef in enumerate(x):
+    print(f"{i+1}. {coef:.4f}")
 
-# b. 
-def classifier(y):
-    if y >= 0:
-        return 1
-    else:
-        return -1
+# read validation data
+A_val, b_val = ecd.read_validation_data('validate.data')
 
-# c.
-A_val, b_val = read_validation_data('validate.data', )
-predictions = np.dot(A_val, coefficients)
-incorrect = 0
-predicted_labels = [classifier(y) for y in predictions]
-for i in range(len(predicted_labels)):
-    if predicted_labels[i] != b_val[i]:
-        incorrect += 1
-error_rate = incorrect / len(predictions)
-print("Validation error rate: {:.2f}%".format(error_rate * 100))
+# apply linear model to validation data
+predictions = A_val @ x
+
+# classify predictions using threshold of 0
+classifications = ecd.classify(predictions, threshold=0)
+
+# compute percentage of misclassifications on validation data
+misclassifications_val = sum(1 for p, q in zip(classifications, b_val) if p != q)
+percentage_misclassified_val = 100 * misclassifications_val / len(b_val)
+accuracy_val = 100 - percentage_misclassified_val
+
+# compute percentage of misclassifications on training data
+predictions_train = A @ x
+classifications_train = ecd.classify(predictions_train, threshold=0)
+misclassifications_train = sum(1 for p, q in zip(classifications_train, b) if p != q)
+percentage_misclassified_train = 100 * misclassifications_train / len(b)
+accuracy_train = 100 - percentage_misclassified_train
+
+# print percentage of misclassifications and accuracy rate on validation and training data
+
+print(f"Percentage of misclassifications on training data: {percentage_misclassified_train:.2f}%, Accuracy rate: {accuracy_train:.2f}%")
+
+print(f"Percentage of misclassifications on validation data: {percentage_misclassified_val:.2f}%, Accuracy rate: {accuracy_val:.2f}%")
+
+# compare with success rate on training data
+if percentage_misclassified_val > percentage_misclassified_train:
+    print("Percentage of misclassifications on validation data is greater than success rate on training data.")
+elif percentage_misclassified_val < percentage_misclassified_train:
+    print("Percentage of misclassifications on validation data is smaller than success rate on training data.")
+else:
+    print("Percentage of misclassifications on validation data is equal to success rate on training data.")

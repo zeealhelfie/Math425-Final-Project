@@ -5,43 +5,21 @@ from sympy import Matrix
 import numpy as np
 
 
-def read_training_data(fname, D=None):
-    """Given a file in appropriate format, and given a set D of features,
-    returns the pair (A, b) consisting of
-    a P-by-D matrix A and a P-vector b,
-    where P is a set of patient identification integers (IDs).
+def read_training_data(filename):
+    with open(filename, 'r') as f:
+        lines = f.readlines()
+    data = []
+    labels = []
+    for line in lines:
+        line = line.strip().split(',')
+        labels.append(1 if line[1] == 'M' else -1)
+        features = [float(x) for x in line[2:]]
+        data.append(features)
+    return np.array(data), np.array(labels, dtype=np.float64)
 
-    For each patient ID p,
-      - row p of A is the D-vector describing patient p's tissue sample,
-      - entry p of b is +1 if patient p's tissue is malignant, and -1 if it is benign.
-
-    The set D of features must be a subset of the features in the data (see text).
-    """
-    
-    file = open(fname)
-    params = ["radius", "texture", "perimeter","area","smoothness","compactness","concavity","concave points","symmetry","fractal dimension"];
-    stats = ["(mean)", "(stderr)", "(worst)"]
-    feature_labels = set([y+x for x in stats for y in params])
-    feature_map = {params[i]+stats[j]:j*len(params)+i for i in range(len(params)) for j in range(len(stats))}
-    if D is None: D = feature_labels
-    feature_vectors = {}
-    #patient_diagnoses = {}
-    A = []
-    b = []
-    for line in file:
-        row = line.split(",")
-        patient_ID = int(row[0])
-        b.append(-1) if row[1] == 'B' else b.append(1)
-        feature_vectors[patient_ID] = Vec(D, {f:float(row[feature_map[f]+2]) for f in D})
-        A.append(vec2list(feature_vectors[patient_ID]))
-    A = np.array(A)
-    Q, R = gram_schmidt_qr(A)
-    return R, Q.T @ Matrix(b)
-        
-def gram_schmidt_qr(A):
+def gram_schmidt_qr(A, b):
     Q = np.zeros_like(A)
     R = np.zeros((A.shape[1], A.shape[1]))
-    # takes in sympy matrix as A
     for j in range(A.shape[1]):
         v = A[:, j]
         for i in range(j):
@@ -49,7 +27,9 @@ def gram_schmidt_qr(A):
             v -= R[i, j] * Q[:, i]
         R[j, j] = np.linalg.norm(v)
         Q[:, j] = v / R[j, j]
-    return Q, R
+    x = np.linalg.solve(R, Q.T.dot(b))
+    return x
+
 
 def read_validation_data(filename):
     with open(filename, 'r') as f:
@@ -62,3 +42,6 @@ def read_validation_data(filename):
         features = [float(x) for x in line[2:]]
         data.append(features)
     return np.array(data), np.array(labels)
+
+def classify(predictions, threshold=0):
+    return np.where(predictions > threshold, 1, -1)
