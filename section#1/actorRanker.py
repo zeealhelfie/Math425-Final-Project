@@ -15,16 +15,15 @@ actors=set()
 with open("data/top250movies.txt","r", encoding='UTF-8') as f:
     for line in f:
         
-        #print(line)
         ls=line.rstrip("\n").split("/")
-        ls.pop(0)#remove first item since it's a movie title, not an actor
-        #print(set(ls))
+        ls.pop(0) # Remove first item since it's a movie title, not an actor
         actors.update(set(ls))
 
 f.close()
 
-actorsSorted=sorted(list(actors))
-#print(actorsSorted)
+# sort list of all actors alphabetically
+actors=sorted(list(actors))
+#print(actors)
 
 n = len(actors)
 # Create adjacency matrix
@@ -33,23 +32,26 @@ G = zeros((n,n))
 with open("data/top250movies.txt","r", encoding='UTF-8') as f:
     for line in f:
         ls=line.rstrip("\n").split("/")
-        lIDs = map(actorsSorted.index, ls) # IDs on the line
+        # Convert actors/names to their IDs/indices in the sorted list
+        lIDs = map(actors.index, ls)
         ls.pop(0)
-        row = [] # row indices of IDS
+        row = [] # Convert lID to iterable/enumerable array
         for idx, i in enumerate(lIDs):
-            #print(i, ls[idx])
             row.append(i)
             
         for idx, i in enumerate(row):
-            # First element is column index
-            # Link node j to node i, i.e. increment weight of G_{ij} 
+            # Link node j to node i,
+            # i.e. increment weight of G_{ij} for each j in the rest of the row
+            
+            # i represents the higher billed actor,
+            #   row[idx+1:] are the lower billed actors.
             G[i, row[idx+1:]] += 1.0
-            #print(ls[idx], G[i, row[idx+1:]])
 
 f.close()
 
-netw=pageRank(G,actorsSorted,0.85,1e-6,15)  
-result = netw.linsolve()
+# Change epsilon to get different results
+netw=pageRank(G,actors,0.69,1e-6,100)  
+result = netw.powermethod()
 
 r=open("actorResults.txt", "w")
 for i in result:
