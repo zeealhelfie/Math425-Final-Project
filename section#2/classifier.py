@@ -1,6 +1,8 @@
 import numpy as np
 import efficient_cancer_data as ecd
 
+#During the data reading process "b" or "y" values are converted binary (or 1,-1) so we can use these values to test the Accuracy of the model at later stages. Testing is done by comparing if the "y" or "b" values are equal or not equal to the predictions values that are later computed using gram schmidt process.
+
 # read training data
 A, b = ecd.read_training_data('train.data')
 
