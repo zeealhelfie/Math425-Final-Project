@@ -72,4 +72,3 @@ def classify(predictions, threshold=0):
         1 or -1.
     """
     return np.where(predictions > threshold, 1, -1)
-
