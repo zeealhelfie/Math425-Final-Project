@@ -7,7 +7,7 @@ import efficient_cancer_data as ecd
 A, b = ecd.read_training_data('train.data')
 
 # Calculate the coefficients of the least squares solution using the Gram-Schmidt QR algorithm
-x = ecd.gram_schmidt_qr(np.copy(A), np.copy(b))
+x = ecd.gram_schmidt_qr(A, b)
 
 # print coefficients of the linear model
 for i, coef in enumerate(x):

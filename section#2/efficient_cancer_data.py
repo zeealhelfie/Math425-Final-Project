@@ -6,6 +6,9 @@ from sympy import Matrix
 import numpy as np
 
 # Define function to read in training data
+import numpy as np
+
+# Define function to read in training data
 def read_training_data(filename):
     with open(filename, 'r') as f:
         lines = f.readlines()
@@ -22,22 +25,15 @@ def read_training_data(filename):
     # Convert data and labels to numpy arrays for easier manipulation
     return np.array(data), np.array(labels, dtype=np.float64)
 
+
 # Define function to perform Gram-Schmidt orthogonalization and QR decomposition
+
 def gram_schmidt_qr(A, b):
-    # Create arrays to hold the orthogonalized vectors and the R matrix
-    Q = np.zeros_like(A)
-    R = np.zeros((A.shape[1], A.shape[1]))
-    # Perform Gram-Schmidt orthogonalization on the columns of A
-    for j in range(A.shape[1]):
-        v = A[:, j] 
-        for i in range(j):
-            R[i, j] = np.dot(Q[:, i], A[:, j])
-            v -= R[i, j] * Q[:, i]
-        R[j, j] = np.linalg.norm(v)
-        Q[:, j] = v / R[j, j]
-    # Solve for x using the QR decomposition
+    Q, R = np.linalg.qr(A)
     x = np.linalg.solve(R, Q.T.dot(b))
     return x
+
+
 
 # Define function to read in validation data
 def read_validation_data(filename):
